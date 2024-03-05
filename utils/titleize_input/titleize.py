@@ -1,12 +1,12 @@
 from utils import InputError
 
 
-def title_text(text: str) -> str:
+def titleize(text: str) -> str:
     """Title the given sting by grammar, ignores uppercase-only words"""
 
     # yet take_input function can't provide non str, however this block is rather for the future scaling
     if type(text) is not str:
-        raise InputError(given_object=text, func_name=title_text.__name__, accepted_type=str)
+        raise InputError(given_object=text, func_name=titleize.__name__, accepted_type=str)
 
     lower_words = ["a", "an", "the", "and", "but", "or", "for", "nor", "on", "at", "to", "by", "with", "in", "of"]
 
@@ -37,9 +37,3 @@ def title_text(text: str) -> str:
             return text
         else:
             return text.capitalize()
-
-
-def take_input(text: str) -> str:
-    """Returns stripped titled input"""
-    user_input = input(title_text(text))
-    return title_text(user_input)
