@@ -1,2 +1,4 @@
-.idea
-/output
+/.idea
+/OUTPUT_FOLDER
+/.git
+/__pycache__

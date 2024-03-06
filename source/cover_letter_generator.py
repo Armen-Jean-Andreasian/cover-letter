@@ -1,11 +1,20 @@
 import threading
-from static.samples.text_samples import GREETING_TEXT, BODY_TEXT, FOOTER_TEXT
+from resources.text_samples import GREETING_TEXT, BODY_TEXT, FOOTER_TEXT
 from utils import date_today
+from utils.file_readers import read_ini
 from .pdf_file import PdfFile
 from .applicant import Applicant
 
 
 class CoverLetterGenerator(Applicant):
+    __output_folder = read_ini(
+        ini_path='configuration.ini',
+        items=(
+            ("output_filepaths", "output_folder"),
+        )
+    )[0]
+
+    file_name = "{output_folder}/{applicant_name}-{position_applied}-Cover_Letter.pdf"
 
     def __init__(self, name, company, position, email, phone, background_color=(189, 212, 188), font_family="Arial",
                  font_size=12):
@@ -16,7 +25,12 @@ class CoverLetterGenerator(Applicant):
         self.font_size = font_size
 
         self.pdf_file = PdfFile()
-        self.file_name = f"output/{self.name.replace(' ', '_')}-{self.position.replace(' ', '_')}-Cover_Letter.pdf"
+
+        self.file_name = CoverLetterGenerator.file_name.format(
+            output_folder=self.__output_folder,
+            applicant_name=self.name.replace(' ', '_'),
+            position_applied=self.position.replace(' ', '_')
+        )
 
     def set_page_config(self):
         """Should be called after the page is added."""
@@ -51,7 +65,6 @@ class CoverLetterGenerator(Applicant):
         # adding content
         self.add_content()
 
-        import string
         # exporting it using threading
 
         save_file_thread = threading.Thread(target=self.save_file)
