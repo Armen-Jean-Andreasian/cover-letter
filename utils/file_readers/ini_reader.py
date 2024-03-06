@@ -1,7 +1,7 @@
 import configparser
 
 
-def read_ini(ini_path: str, items: tuple[tuple[str, str], ...]) -> list[str]:
+def read_ini(items: tuple[tuple[str, str], ...], ini_path: str = 'configuration.ini') -> list[str]:
     """
     :param ini_path: path to ini file
     :param items: tuple((section_name, option_name), (section_name, option_name) )

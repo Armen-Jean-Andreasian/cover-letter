@@ -1,4 +1,5 @@
-from .main_frame import QApplication, MainFrame
+from .main_frame import MainFrame
+from PyQt5.QtWidgets import QApplication
 
 
 def run_gui():
