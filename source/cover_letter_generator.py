@@ -18,7 +18,7 @@ class CoverLetterGenerator(Applicant):
 
     def __init__(self, name, company, position, email, phone, background_color=(189, 212, 188), font_family="Arial",
                  font_size=12):
-        super().__init__(name, company, position, email, phone)
+        super().__init__(name=name, company=company, position=position, email=email, phone=phone)
 
         self.background_color = background_color
         self.font_family = font_family
@@ -52,6 +52,7 @@ class CoverLetterGenerator(Applicant):
 
     def save_file(self):
         """Saves the PDF file to computer"""
+        self.save_data()
         self.pdf_file.output(name=self.file_name)
         return self
 
