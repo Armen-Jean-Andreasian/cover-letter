@@ -52,7 +52,7 @@ class CoverLetterGenerator(Applicant):
 
     def save_file(self):
         """Saves the PDF file to computer"""
-        self.save_data()
+        self.save_new_data()
         self.pdf_file.output(name=self.file_name)
         return self
 

@@ -1,74 +1,57 @@
-import json
+from utils.file_readers.json_reader import read_json, write_json
 
 
-class Singleton(type):
-    _instances = {}
+class SingletonApplicant(type):
+    instances = set()
 
-    def __call__(cls, *args, **kwargs):
-        if cls not in cls._instances:
-            instance = super().__call__(*args, **kwargs)
-            cls._instances[cls] = instance
-        return cls._instances[cls]
+    def __new__(cls, *args, **kwargs):
+        instance = super().__new__(cls, *args, **kwargs)
+
+        instance.file = "user_data.json"  # read only, kill it with fire
+        if instance not in cls.instances:
+            cls.instances.add(instance)
+        return instance
 
 
-class Applicant(metaclass=Singleton):
+class Applicant(metaclass=SingletonApplicant):
     """Holds the information provided by user """
+
+    __slots__ = ("data", "company",  "name", "position", "email", "phone")
 
     def __init__(self, company: str = None, name: str = None, position: str = None, email: str = None,
                  phone: str = None):
-        # before assigning
-        self.data = self.load_data()
+        # loading last data
+        self.data = self.load_last_data()
 
         self.company = company
 
-        if name:
-            self.name = name
-            self.data["name"] = name
-        else:
-            self.name = self.data["name"]
+        attributes = {"name": name, "position": position, "email": email, "phone": phone}
 
-        if position:
-            self.position = position
-            self.data["position"] = position
-        else:
-            self.position = self.data["position"]
+        # Achtung, dynamic assignment and in-place update of self.data
+        for attribute, value in attributes.items():
+            if value:
+                setattr(self, attribute, value)
+                self.data[attribute] = value
+            else:
+                setattr(self, attribute, self.data[attribute])
 
-        if email:
-            self.email = email
-            self.data["email"] = email
-        else:
-            self.email = self.data["email"]
+    def __str__(self):
+        return str(self)
 
-        if phone:
-            self.phone = phone
-            self.data["phone"] = phone
-        else:
-            self.phone = self.data["phone"]
+    def load_last_data(self) -> dict:
+        return read_json(file_name=self.file)
 
-    def load_data(self) -> dict:
-        return UserData.load_data()
-
-    def save_data(self) -> None:
-        return UserData.save_data(data=self.data)
+    def save_new_data(self) -> None:
+        return write_json(file_name=self.file, data=self.data)
 
 
 class UserData:
-    file = "user_data.json"
-
+    """
+    A user data model, utilizing you're gonna need it principle.
+    """
     blueprint = {
         "name": "",
         "position": "",
         "email": "",
         "phone": ""
     }
-
-    @staticmethod
-    def load_data() -> dict:
-        with open(file=UserData.file) as db:
-            return json.load(db)
-
-    @staticmethod
-    def save_data(data: dict) -> None:
-        with open(file=UserData.file, mode='w') as json_file:
-            json.dump(data, json_file, indent=4)
-        return None
