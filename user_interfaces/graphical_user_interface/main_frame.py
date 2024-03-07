@@ -1,7 +1,7 @@
 from PyQt5.QtWidgets import QLineEdit, QFormLayout, QPushButton, QWidget, QMessageBox, QHBoxLayout
 from PyQt5.QtGui import QIcon
 from utils.file_readers import read_ini
-from utils import titleize
+from utils.titleize_input import titleize
 from source import CoverLetterGenerator
 from source.applicant import Applicant
 from .widgets import RGBColorPicker
@@ -53,6 +53,9 @@ class MainFrame(QWidget):
         self.phone_field = QLineEdit(self.applicant_old_data.phone)
         self.phone_field.setPlaceholderText("Enter your phone number")
 
+        self.personal_website = QLineEdit(self.applicant_old_data.website)
+        self.personal_website.setPlaceholderText("Enter your website URL for a QR code")
+
         self.pick_color_button = QPushButton("Pick")
         self.pick_color_button.clicked.connect(self.pick_color)
 
@@ -67,6 +70,7 @@ class MainFrame(QWidget):
         layout.addRow("Position:", self.position_field)
         layout.addRow("Email:", self.email_field)
         layout.addRow("Phone:", self.phone_field)
+        layout.addRow("Website", self.personal_website)
         layout.addRow("Pick a background color:", self.pick_color_button)
         layout.addRow("", self.generate_button)
 
@@ -88,11 +92,12 @@ class MainFrame(QWidget):
         position = titleize(self.position_field.text())
         email = self.email_field.text().strip()
         phone = self.phone_field.text().strip()
+        website = self.personal_website.text().strip()
 
         if self.pdf_background_color is None:
             self.pdf_background_color = (189, 212, 188)
 
-        cover_letter = CoverLetterGenerator(name, company, position, email, phone,
+        cover_letter = CoverLetterGenerator(name, company, position, email, phone, website,
                                             background_color=self.pdf_background_color)
 
         result = cover_letter.generate()

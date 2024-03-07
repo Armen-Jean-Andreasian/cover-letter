@@ -1,4 +1,4 @@
-from utils import InputError
+from utils.errors import InputError
 
 
 def titleize(text: str) -> str:

@@ -1,4 +1,4 @@
-from utils import take_input
+from utils.take_input import take_input
 from source import CoverLetterGenerator
 
 

@@ -16,16 +16,16 @@ class SingletonApplicant(type):
 class Applicant(metaclass=SingletonApplicant):
     """Holds the information provided by user """
 
-    __slots__ = ("data", "company",  "name", "position", "email", "phone")
+    __slots__ = ("data", "company",  "name", "position", "email", "phone", "website")
 
     def __init__(self, company: str = None, name: str = None, position: str = None, email: str = None,
-                 phone: str = None):
+                 phone: str = None, website: str = None):
         # loading last data
         self.data = self.load_last_data()
 
         self.company = company
 
-        attributes = {"name": name, "position": position, "email": email, "phone": phone}
+        attributes = {"name": name, "position": position, "email": email, "phone": phone, "website": website}
 
         # Achtung, dynamic assignment and in-place update of self.data
         for attribute, value in attributes.items():
@@ -53,5 +53,6 @@ class UserData:
         "name": "",
         "position": "",
         "email": "",
-        "phone": ""
+        "phone": "",
+        "website": ""
     }
