@@ -16,16 +16,23 @@ class CoverLetterGenerator(Applicant):
         )
     )[0]
 
-    file_name_prototype = "{output_folder}/{applicant_name}-{position_applied}-Cover_Letter.pdf"
+    def __new__(cls, *args, **kwargs):
+        instance = super().__new__(cls)
+        instance.file_name_prototype = "{output_folder}/{applicant_name}-{position_applied}-Cover_Letter.pdf"
+        return instance
 
-    __slots__ = Applicant.__slots__ + ("file_name", "background_color", "font_family", "font_size", "pdf_file",
-                                       "heading_font_family", "heading_font_style", "heading_font_size",
-                                       "content_font_family", "content_font_size")
+    def __init__(self, background_color,  applicant_name, hr_name, email, phone, company, position, website,
+                 font_family="Arial", font_size=12,):
+        super().__init__(
+            applicant_name=applicant_name,
+            position=position,
+            email=email,
+            phone=phone,
+            website=website
+        )
+        self.hr_name = hr_name
+        self.company = company
 
-    def __init__(self, name, company, position, email, phone, website, background_color=(189, 212, 188),
-                 font_family="Arial",
-                 font_size=12):
-        super().__init__(name=name, company=company, position=position, email=email, phone=phone, website=website)
         self.background_color = background_color
         self.font_family = font_family
         self.font_size = font_size
@@ -41,7 +48,7 @@ class CoverLetterGenerator(Applicant):
 
         self.file_name = self.file_name_prototype.format(
             output_folder=self.__output_folder,
-            applicant_name=self.name.replace(' ', '_'),
+            applicant_name=self.applicant_name.replace(' ', '_'),
             position_applied=self.position.replace(' ', '_')
         )
 
@@ -50,26 +57,26 @@ class CoverLetterGenerator(Applicant):
         self.pdf_file.set_fill_color(*self.background_color)
         self.pdf_file.rect(0, 0, self.pdf_file.w, self.pdf_file.h, 'F')
 
-    def add_content(self):
+    def add_content(self, applicant_name, hr_name, email, phone, company, position, website):
         """Adds content to the page"""
         self.pdf_file.set_font(family=self.content_font_family, size=self.content_font_size)  # content font
         self.pdf_file.add_cell(w=190, txt=f"Date: {date_today()}", align="R")
 
         self.pdf_file.set_font(family=self.heading_font_family, size=self.heading_font_size,
                                style=self.heading_font_style)  # heading font
-        self.pdf_file.add_cell(txt=f"Dear Hiring Manager", align="C")
+        self.pdf_file.add_cell(txt=f"Dear {hr_name}", align="C")
 
         self.pdf_file.set_font(family=self.content_font_family, size=self.content_font_size)  # content font
-        self.pdf_file.add_multi_cell(txt=GREETING_TEXT.format(position=self.position, company=self.company))
+        self.pdf_file.add_multi_cell(txt=GREETING_TEXT.format(position=position, company=company))
         self.pdf_file.add_multi_cell(txt=BODY_TEXT)
-        self.pdf_file.add_multi_cell(txt=FOOTER_TEXT.format(email=self.email, phone=self.phone))
+        self.pdf_file.add_multi_cell(txt=FOOTER_TEXT.format(email=email, phone=phone))
 
         self.pdf_file.add_cell(txt="Sincerely,", add_break_line=False)
-        self.pdf_file.add_cell(txt=f"{self.name}")
+        self.pdf_file.add_cell(txt=f"{applicant_name}")
 
         if self.website:
-            qr_builder(message=self.website)  # generating QR code
-            self.pdf_file.image(name="OUTPUT_FOLDER/qrcode.png", x=10, y=10, w=15) # adding QR code
+            qr_builder(message=website)  # generating QR code
+            self.pdf_file.image(name="OUTPUT_FOLDER/qrcode.png", x=10, y=10, w=15)  # adding QR code
 
         return self
 
@@ -80,6 +87,7 @@ class CoverLetterGenerator(Applicant):
         return self
 
     def generate(self):
+
         # adding one page
         self.pdf_file.add_page()
 
@@ -87,7 +95,8 @@ class CoverLetterGenerator(Applicant):
         self.set_page_config()
 
         # adding content
-        self.add_content()
+        self.add_content(self.applicant_name, self.hr_name, self.email, self.phone, self.company, self.position,
+                         self.website)
 
         # exporting pdf using threading
         export_file(io_bound_function=self.save_file)

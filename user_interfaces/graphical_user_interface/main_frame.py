@@ -38,11 +38,14 @@ class MainFrame(QWidget):
         self.dialog.colorSelected.connect(self.handle_color_selection)  # Connect signal to slot
 
         # setting elements
-        self.name_field = QLineEdit(self.applicant_old_data.name)
+        self.name_field = QLineEdit(self.applicant_old_data.applicant_name)
         self.name_field.setPlaceholderText("Enter your full name")
 
         self.company_field = QLineEdit()
         self.company_field.setPlaceholderText("Enter the company name")
+
+        self.hr_name = QLineEdit()
+        self.hr_name.setPlaceholderText('Leave empty for "Dear Hiring Manager"')
 
         self.position_field = QLineEdit(self.applicant_old_data.position)
         self.position_field.setPlaceholderText("Enter the position")
@@ -67,6 +70,7 @@ class MainFrame(QWidget):
 
         layout.addRow("Name:", self.name_field)
         layout.addRow("Company:", self.company_field)
+        layout.addRow("HR name:", self.hr_name)
         layout.addRow("Position:", self.position_field)
         layout.addRow("Email:", self.email_field)
         layout.addRow("Phone:", self.phone_field)
@@ -87,8 +91,9 @@ class MainFrame(QWidget):
         return self
 
     def generate_cover_letter(self):
-        name = titleize(self.name_field.text())
+        applicant_name = titleize(self.name_field.text())
         company = titleize(self.company_field.text())
+        hr_name = titleize(self.hr_name.text())
         position = titleize(self.position_field.text())
         email = self.email_field.text().strip()
         phone = self.phone_field.text().strip()
@@ -97,7 +102,13 @@ class MainFrame(QWidget):
         if self.pdf_background_color is None:
             self.pdf_background_color = (189, 212, 188)
 
-        cover_letter = CoverLetterGenerator(name, company, position, email, phone, website,
+        cover_letter = CoverLetterGenerator(applicant_name=applicant_name,
+                                            hr_name=hr_name,
+                                            email=email,
+                                            phone=phone,
+                                            company=company,
+                                            position=position,
+                                            website=website,
                                             background_color=self.pdf_background_color)
 
         result = cover_letter.generate()
