@@ -2,15 +2,13 @@ from utils.file_readers.json_reader import read_json, write_json
 
 
 class SingletonApplicant(type):
-    instances = set()
+    _instance = None
 
-    def __new__(cls, *args, **kwargs):
-        instance = super().__new__(cls, *args, **kwargs)
-
-        instance.file = "user_data.json"  # read only, kill it with fire
-        if instance not in cls.instances:
-            cls.instances.add(instance)
-        return instance
+    def __new__(cls, name, bases, dct):
+        if not cls._instance:
+            cls._instance = super().__new__(cls, name, bases, dct)
+            cls._instance.file = "user_data.json"
+        return cls._instance
 
 
 class Applicant(metaclass=SingletonApplicant):
@@ -23,7 +21,8 @@ class Applicant(metaclass=SingletonApplicant):
         # loading last data
         self.applicant_data = self.load_last_data()
 
-        attributes = {"applicant_name": applicant_name, "position": position, "email": email, "phone": phone, "website": website}
+        attributes = {"applicant_name": applicant_name, "position": position, "email": email, "phone": phone,
+                      "website": website}
 
         # Achtung, dynamic assignment and in-place update of self.data
         for attribute, value in attributes.items():

@@ -102,16 +102,16 @@ class MainFrame(QWidget):
         if self.pdf_background_color is None:
             self.pdf_background_color = (189, 212, 188)
 
-        cover_letter = CoverLetterGenerator(applicant_name=applicant_name,
-                                            hr_name=hr_name,
-                                            email=email,
-                                            phone=phone,
-                                            company=company,
-                                            position=position,
-                                            website=website,
-                                            background_color=self.pdf_background_color)
+        cover_letter_generator = CoverLetterGenerator(applicant_name=applicant_name,
+                                                      hr_name=hr_name,
+                                                      email=email,
+                                                      phone=phone,
+                                                      company=company,
+                                                      position=position,
+                                                      website=website,
+                                                      background_color=self.pdf_background_color)
 
-        result = cover_letter.generate()
+        result = cover_letter_generator.generate()
 
         # Pop-up window
         msg_box = QMessageBox()
