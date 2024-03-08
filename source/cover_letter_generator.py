@@ -5,7 +5,8 @@ from .applicant import Applicant
 
 
 class CoverLetterGenerator(CoverLetter):
-    def __init__(self, background_color, applicant_name, hr_name, email, phone, company, position, website):
+    def __init__(self, applicant_name, hr_name, email, phone, company, position, website,
+                 background_color=(189, 212, 188), ):
         super().__init__(background_color)
 
         self.applicant = Applicant()
