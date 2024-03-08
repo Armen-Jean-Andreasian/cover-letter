@@ -4,7 +4,7 @@ from utils.file_readers import read_ini
 from utils.titleize_input import titleize
 from source import CoverLetterGenerator
 from source.applicant import Applicant
-from .widgets import RGBColorPicker
+from .widgets import RGBColorPicker, CompletionPopUp
 
 
 class MainFrame(QWidget):
@@ -112,18 +112,6 @@ class MainFrame(QWidget):
                                                       background_color=self.pdf_background_color)
 
         result = cover_letter_generator.generate()
-
-        # Pop-up window
-        msg_box = QMessageBox()
-        msg_box.setWindowTitle("Success")
-        msg_box.setIcon(QMessageBox.Information)
-
         if result:
-            msg_box.setText(result)
-        else:
-            # Default message
-            msg_box.setText("Cover letter generation completed.")
-
-        msg_box.setStandardButtons(QMessageBox.Ok)
-        # Show the Pop-up window
-        msg_box.exec_()
+            pop_up = CompletionPopUp()
+            pop_up.display(result=result)
