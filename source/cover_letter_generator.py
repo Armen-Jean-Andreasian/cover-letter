@@ -26,7 +26,6 @@ class CoverLetterGenerator(CoverLetter):
 
         # setting the config_files of the page
         self.set_page_config()
-        print("set_page_config")
 
         # adding content
         self.add_content(applicant_name=self.applicant.applicant_name,

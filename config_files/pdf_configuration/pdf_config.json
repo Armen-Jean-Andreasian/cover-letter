@@ -1,6 +1,6 @@
 {
   "background_color": [189, 212, 188],
-  "output_file_name_prototype": "resources/binaries/icon.png",
+  "output_file_name_prototype": "{output_folder}/{applicant_name}-{position_applied}-Cover_Letter.pdf",
   "pdf_output_folder":"OUTPUT_FOLDER",
 
   "heading_font_family": "Arial",

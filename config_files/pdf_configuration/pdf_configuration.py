@@ -3,10 +3,10 @@ from utils.file_readers import read_json
 
 
 class PdfConfig(dict, metaclass=Singleton):
-    filename = "config_files/pdf_configuration/pdf_config.json"
+    json_config_file = "config_files/pdf_configuration/pdf_config.json"
 
     def __init__(self):
-        super().__init__(read_json(self.filename))
+        super().__init__(read_json(self.json_config_file))
 
         self.background_color = self["background_color"]
         self.output_file_name_prototype = self["output_file_name_prototype"]

@@ -22,6 +22,9 @@ class CoverLetter:
     def add_content(self, applicant_name, hr_name, email, phone, company, position, website):
         """Adds content to the page"""
         # content font
+
+        print(company)
+        print(hr_name)
         self.pdf_file.set_font(family=self.config.content_font_family, size=self.config.content_font_size)
 
         self.pdf_file.add_cell(w=190, txt=f"Date: {date_today()}", align="R")

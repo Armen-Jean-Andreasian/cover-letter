@@ -3,10 +3,10 @@ from utils.file_readers import read_json
 
 
 class GuiConfig(dict, metaclass=Singleton):
-    filename = "config_files/gui_configuration/gui_config.json"
+    json_config_file = "config_files/gui_configuration/gui_config.json"
 
     def __init__(self):
-        super().__init__(read_json(self.filename))
+        super().__init__(read_json(self.json_config_file))
 
         self.title = self["title"]
         self.app_icon = self["app_icon"]
