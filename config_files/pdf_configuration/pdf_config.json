@@ -1,0 +1,12 @@
+{
+  "background_color": [189, 212, 188],
+  "output_file_name_prototype": "resources/binaries/icon.png",
+  "pdf_output_folder":"OUTPUT_FOLDER",
+
+  "heading_font_family": "Arial",
+  "heading_font_style": "I",
+  "heading_font_size": 16,
+
+  "content_font_family":"Arial",
+  "content_font_size":12
+}

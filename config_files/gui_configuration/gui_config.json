@@ -1,0 +1,7 @@
+{
+  "title": "Cover Letter Generator",
+  "app_icon": "resources/binaries/icon.png",
+  "window_size":[610, 310],
+  "css_style_sheet_fp": "user_interfaces/graphical_user_interface/style_sheet.css"
+
+}
