@@ -1,38 +1,17 @@
 from .pdf_file import PdfFile
+from config_files.pdf_configuration import PdfConfig
 from resources.text_samples import GREETING_TEXT, BODY_TEXT, FOOTER_TEXT
-
 from utils.qr_code_generator.qr import qr_builder
 from utils.date_stampt import date_today
-from utils.file_readers import read_ini
 
 
 class CoverLetter:
-    __output_folder = read_ini(
-        ini_path='configuration.ini',
-        items=(
-            ("output_filepaths", "output_folder"),
-        )
-    )[0]
 
-    def __new__(cls, *args, **kwargs):
-        instance = super().__new__(cls)
-        instance.file_name_prototype = "{output_folder}/{applicant_name}-{position_applied}-Cover_Letter.pdf"
-        return instance
+    def __init__(self, background_color):
+        self.config = PdfConfig()
 
-    def __init__(self, background_color, font_family="Arial", font_size=12, ):
-        self.background_color = background_color
-        self.font_family = font_family
-        self.font_size = font_size
-
-        self.heading_font_family = "Arial"
-        self.heading_font_style = "I"
-        self.heading_font_size = 16
-
-        self.content_font_family = "Arial"
-        self.content_font_size = 12
-
+        self.background_color = background_color if background_color is not None else self.config.background_color
         self.pdf_file = PdfFile()
-
         self.file_name = None
 
     def set_page_config(self):
@@ -42,14 +21,18 @@ class CoverLetter:
 
     def add_content(self, applicant_name, hr_name, email, phone, company, position, website):
         """Adds content to the page"""
-        self.pdf_file.set_font(family=self.content_font_family, size=self.content_font_size)  # content font
+        # content font
+        self.pdf_file.set_font(family=self.config.content_font_family, size=self.config.content_font_size)
+
         self.pdf_file.add_cell(w=190, txt=f"Date: {date_today()}", align="R")
 
-        self.pdf_file.set_font(family=self.heading_font_family, size=self.heading_font_size,
-                               style=self.heading_font_style)  # heading font
+        self.pdf_file.set_font(family=self.config.heading_font_family, size=self.config.heading_font_size,
+                               style=self.config.heading_font_style)  # heading font
+
         self.pdf_file.add_cell(txt=f"Dear {hr_name}", align="C")
 
-        self.pdf_file.set_font(family=self.content_font_family, size=self.content_font_size)  # content font
+        # content font
+        self.pdf_file.set_font(family=self.config.content_font_family, size=self.config.content_font_size)
         self.pdf_file.add_multi_cell(txt=GREETING_TEXT.format(position=position, company=company))
         self.pdf_file.add_multi_cell(txt=BODY_TEXT)
         self.pdf_file.add_multi_cell(txt=FOOTER_TEXT.format(email=email, phone=phone))
@@ -57,17 +40,18 @@ class CoverLetter:
         self.pdf_file.add_cell(txt="Sincerely,", add_break_line=False)
         self.pdf_file.add_cell(txt=f"{applicant_name}")
 
+        # generating QR image
         if website:
-            qr_builder(message=website)  # generating QR code
-            self.pdf_file.image(name="OUTPUT_FOLDER/qrcode.png", x=10, y=10, w=15)  # adding QR code
+            qr_builder(message=website)
+            self.pdf_file.image(name="OUTPUT_FOLDER/qrcode.png", x=10, y=10, w=15)  # adding QR
 
         self._init_file_name(applicant_name, position)
 
         return self
 
     def _init_file_name(self, applicant_name: str, position: str):
-        self.file_name = self.file_name_prototype.format(
-            output_folder=self.__output_folder,
+        self.file_name = self.config.output_file_name_prototype.format(
+            output_folder=self.config.pdf_output_folder,
             applicant_name=applicant_name.replace(' ', '_'),
             position_applied=position.replace(' ', '_')
         )

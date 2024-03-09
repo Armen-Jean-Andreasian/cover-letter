@@ -1,23 +1,22 @@
-from PyQt5.QtWidgets import QLineEdit, QFormLayout, QPushButton, QWidget, QMessageBox, QHBoxLayout
+from PyQt5.QtWidgets import QLineEdit, QFormLayout, QPushButton, QWidget
 from PyQt5.QtGui import QIcon
-from utils.file_readers import read_ini
-from utils.titleize_input import titleize
 from source import CoverLetterGenerator
 from source.applicant import Applicant
 from .widgets import RGBColorPicker, CompletionPopUp
+from utils.file_readers import read_text
+from utils.titleize_input import titleize
+from config_files.gui_configuration import GuiConfig
 
 
 class MainFrame(QWidget):
-    title = "Cover Letter Generator"
-    icon = read_ini(items=(("binary_filepaths", "app_icon"),))[0]
-    window_size = (610, 250)
+    gui_config = GuiConfig()
 
-    gui_style = read_ini(items=(("styles_filepaths", "gui_design"),))[0]
+    title = gui_config.title
+    icon = gui_config.app_icon
+    window_size = gui_config.window_size
 
     pdf_background_color = None
-
-    with open(gui_style) as css_file:
-        style_sheet = css_file.read()
+    style_sheet = read_text(filepath=gui_config.css_style_sheet_fp)
 
     def __init__(self):
         super().__init__()
@@ -98,9 +97,6 @@ class MainFrame(QWidget):
         email = self.email_field.text().strip()
         phone = self.phone_field.text().strip()
         website = self.personal_website.text().strip()
-
-        if self.pdf_background_color is None:
-            self.pdf_background_color = (189, 212, 188)
 
         cover_letter_generator = CoverLetterGenerator(applicant_name=applicant_name,
                                                       hr_name=hr_name,

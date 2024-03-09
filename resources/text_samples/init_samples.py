@@ -12,6 +12,6 @@ greeting_txt_file, body_txt_file, footer_txt_file = read_ini(
     )
 )
 
-GREETING_TEXT = read_text(greeting_txt_file)
-BODY_TEXT = read_text(body_txt_file)
-FOOTER_TEXT = read_text(footer_txt_file)
+GREETING_TEXT = read_text(filepath="resources/text_samples/files/greeting.txt")
+BODY_TEXT = read_text(filepath="resources/text_samples/files/body.txt")
+FOOTER_TEXT = read_text(filepath="resources/text_samples/files/footer.txt")
