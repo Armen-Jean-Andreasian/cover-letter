@@ -9,6 +9,7 @@ class PdfConfig(dict, metaclass=Singleton):
         super().__init__(read_json(self.json_config_file))
 
         self.background_color = self["background_color"]
+        self.text_color = self['text_color']
         self.output_file_name_prototype = self["output_file_name_prototype"]
         self.pdf_output_folder = self["pdf_output_folder"]
 

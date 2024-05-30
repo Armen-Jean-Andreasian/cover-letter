@@ -1,5 +1,6 @@
 {
   "background_color": [189, 212, 188],
+  "text_color": [0, 0, 0],
   "output_file_name_prototype": "{output_folder}/{applicant_name}-{position_applied}-Cover_Letter.pdf",
   "pdf_output_folder":"OUTPUT_FOLDER",
 

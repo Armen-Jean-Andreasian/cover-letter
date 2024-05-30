@@ -21,6 +21,8 @@ class Applicant(metaclass=SingletonApplicant):
         # loading last data
         self.applicant_data = self.load_last_data()
 
+        # hold on, wait a minute. you were thinking about setters, right? this approach is better.
+
         attributes = {"applicant_name": applicant_name, "position": position, "email": email, "phone": phone,
                       "website": website}
 
