@@ -3,3 +3,4 @@ config~=0.5.1
 PyQt5~=5.15.10
 qrcode~=7.4.2
 streamlit~=1.30.0
+pydantic~=2.4.2

@@ -1,57 +1,26 @@
+import pydantic
 from utils.file_readers.json_reader import read_json, write_json
+from config import USER_DATA_JSON
 
 
-class SingletonApplicant(type):
-    _instance = None
+class Applicant(pydantic.BaseModel):
+	applicant_name: str | None = None
+	applicant_data: str | None = None
+	position: str | None = None
+	email: pydantic.EmailStr | None = None
+	phone: str | None = None
+	website: str | None = None  # Annotated[HttpUrl, AfterValidator(str)]| None = None  is annoying and not working
 
-    def __new__(cls, name, bases, dct):
-        if not cls._instance:
-            cls._instance = super().__new__(cls, name, bases, dct)
-            cls._instance.file = "user_data.json"
-        return cls._instance
+	def __init__(self):
+		super().__init__()
+		self.load_last_data()
 
+	def load_last_data(self) -> None:
+		loaded_data = read_json(file_name=USER_DATA_JSON)
+		for attr, value in loaded_data.items():
+			if hasattr(self, attr):
+				setattr(self, attr, value)
 
-class Applicant(metaclass=SingletonApplicant):
-    """Holds the information provided by user """
-
-    __slots__ = ("applicant_data", "applicant_name", "position", "email", "phone", "website")
-
-    def __init__(self, applicant_name: str = None, position: str = None, email: str = None,
-                 phone: str = None, website: str = None):
-        # loading last data
-        self.applicant_data = self.load_last_data()
-
-        # hold on, wait a minute. you were thinking about setters, right? this approach is better.
-
-        attributes = {"applicant_name": applicant_name, "position": position, "email": email, "phone": phone,
-                      "website": website}
-
-        # Achtung, dynamic assignment and in-place update of self.data
-        for attribute, value in attributes.items():
-            if value:
-                setattr(self, attribute, value)
-                self.applicant_data[attribute] = value
-            else:
-                setattr(self, attribute, self.applicant_data[attribute])
-
-    def __str__(self):
-        return str(self)
-
-    def load_last_data(self) -> dict:
-        return read_json(file_name=self.file)
-
-    def save_new_data(self) -> None:
-        return write_json(file_name=self.file, data=self.applicant_data)
-
-
-class UserData:
-    """
-    A user data model, utilizing you're gonna need it principle.
-    """
-    blueprint = {
-        "name": "",
-        "position": "",
-        "email": "",
-        "phone": "",
-        "website": ""
-    }
+	def save_new_data(self) -> None:
+		data_to_save = dict(filter(lambda item: item[1] is not None, self.model_dump(mode='json').items()))
+		write_json(file_name=USER_DATA_JSON, data=data_to_save)
